@@ -58,8 +58,12 @@ body {
   cursor: pointer;
 }
 
-.choose-file{
+#file-input{
   display: none;
+}
+
+#file-name-display{
+  color: #fff;
 }
 
 .-dim-2 {
@@ -96,6 +100,7 @@ body {
 }
 
 .container h4 {
+  color: #fff;
   margin-top: 5px;
   font-size: 18px;
   margin-bottom: 14px;
