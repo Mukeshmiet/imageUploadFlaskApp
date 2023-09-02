@@ -12,7 +12,7 @@
         <div class="--display --w-100 --h-40">
             <form class="--display --w-60 --h-100" method="POST" enctype="multipart/form-data" action="/upload">
                 <div class="choose-file">
-                    <input class="" type="file" name="image" id="file-input" accept="image/*" required />
+                    <input type="file" name="image" id="file-input" accept="image/*" required />
                     <div id="file-name-display"></div>
                 </div>
                 <div class="--display --dim">
@@ -31,4 +31,12 @@
         <div>
             <h4>{{ error_message }}</h4>
         </div>
+
+        <script>
+            document.querySelector("#file-input").addEventListener("change", function () {
+                const fileNameDisplay = document.querySelector("#file-name-display");
+                const fileName = this.files[0].name;
+                fileNameDisplay.textContent = `Selected file: ${fileName}`;
+            });
+        </script>
 {% endblock %}

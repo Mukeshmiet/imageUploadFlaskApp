@@ -16,8 +16,9 @@ To get started with the Image Upload and Capture App, follow these installation 
 
 1. Clone the repository to your local machine:
 2. Navigate to the project directory and then Install the required dependencies using :  pip install -r requirements.txt
-3. Open terminal where project app.py exist and then run the app using : python app.py
-4. Connect your with the same wifi network and in browser navigate to the url shown in the terminal.
+3. Open terminal at project folder and then run the app using : "python app.py" 
+4. Use pass: "App@123" for SSL, make sure debugging if False
+5. Connect your with the same wifi network and in browser navigate to the url shown in the terminal.
 
 
 ### License
