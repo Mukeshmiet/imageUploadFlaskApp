@@ -6,7 +6,7 @@
 <!-- it will hide video feed if image is captured -->
 {% if filename == '' %}
 <h3>Capture Image</h3>
-<video id="camera-feed" width="640" height="480" style="margin-bottom: 10px;" autoplay></video>
+<video id="camera-feed" style="margin-bottom: 10px;" autoplay></video>
 <div class="--display --w-100 --h-40">
     <form class="--display --w-60 --h-100" method="POST" action="/capture" enctype="multipart/form-data">
         <div class="choose-file">
@@ -23,7 +23,7 @@
 <!-- it will show video feed if image is not captured -->
 {% if filename != '' %}
 <h3>Captured Image</h3>
-<img src="{{ url_for('captured', filename=filename) }}" alt="Uploaded Image" style="margin-top: 10px;">
+<img class="captured-image" src="{{ url_for('captured', filename=filename) }}" alt="Uploaded Image" style="margin-top: 10px;">
 {% endif %}
 <div class="--display"><br><span>{{filename}}</span>
 </div>
@@ -38,39 +38,46 @@
         const capturedImageInput = document.getElementById("file-input");
         const captureForm = document.getElementById("captureForm");
     
-        // Access the user's camera for video feed and capture the image
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then((stream) => {
-                // Create a video element to display the camera feed
-                const video = document.getElementById("camera-feed");
-                video.srcObject = stream;
-    
-                // Function to capture the image
-                const captureImage = () => {
-                    video.style.display = "none";
-                    const canvas = document.createElement("canvas");
-                    canvas.width = video.videoWidth;
-                    canvas.height = video.videoHeight;
-                    const context = canvas.getContext("2d");
-                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    
-                    // Convert the captured image to a base64 data to save it as .png file
-                    const imageDataUrl = canvas.toDataURL("image/png");
-    
-                    // Set the base64 data in the hidden input field
-                    capturedImageInput.value = imageDataUrl;
-    
-                    // Submit the form to save the image on the server
-                    captureForm.submit();
+    // Access the user's camera with rear camera preference
+    navigator.mediaDevices.enumerateDevices()
+    .then(devices => {
+        const rearCamera = devices.find(device => device.kind === 'videoinput' && device.label.toLowerCase().includes('back'));
+        if (rearCamera) {
+            return navigator.mediaDevices.getUserMedia({ video: { deviceId: rearCamera.deviceId } });
+        } else {
+            // If no rear camera found, fall back to any available camera
+            return navigator.mediaDevices.getUserMedia({ video: true });
+        }
+    })
+    .then((stream) => {
+        // Create a video element to display the camera feed
+        const video = document.getElementById("camera-feed");
+        video.srcObject = stream;
+
+        // Function to capture the image
+        const captureImage = () => {
+            const canvas = document.createElement("canvas");
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const context = canvas.getContext("2d");
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Convert the captured image to a base64 data to save it as .png file
+            const imageDataUrl = canvas.toDataURL("image/png");
+
+            // Set the base64 data in the hidden input field
+            capturedImageInput.value = imageDataUrl;
+
+            // Submit the form to save the image on the server
+            captureForm.submit();
                 };
                 // `captureButton` click event
-                captureButton.addEventListener("click", captureImage);
-            })
-            .catch((error) => {
-                // Display an error message if access to media devices is denied
-                console.error("Error accessing the camera:", error);
-            });
+            captureButton.addEventListener("click", captureImage);
+    })
+    .catch((error) => {
+        // Display an error message if access to media devices is denied
+        console.error("Error accessing the camera:", error);
     });
-    
+});
 </script>
 {% endblock %}
