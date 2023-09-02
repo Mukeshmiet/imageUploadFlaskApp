@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 from werkzeug.utils import secure_filename     # secure_filename is used to sanitize and secure filename before storing it
 import os
 import jwt
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 
 app = Flask(__name__)
@@ -13,23 +15,28 @@ app.config['UPLOAD_FOLDER'] = 'userImages'
 #import secrets
 #SECRET_KEY = secrets.token_hex(32)
 
-SECRET_KEY = 'b9dd0c9baeccb0cd3af3c9e14f26d405653e54afc742f46e9d7fb03a4e3e63b4'   
+SECRET_KEY = 'b9dd0c9baeccb0cd3af3c9e14f26d405653e54afc742f46e9d7fb03a4e3e63b4'  
+
+# create a limiter object
+limiter_5 = Limiter( get_remote_address, app= app, default_limits=["5 per minute"] ) 
 
 # Create a route to generate a JWT token
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()   # a JSON request with user data
     if data['username'] == 'flaskApp' and data['password'] == 'App@123':
-        token = jwt.encode({'user': data['username']}, SECRET_KEY, algorithm='RS256')
-        return jsonify({'token': token.decode('UTF-8')})
+        token = jwt.encode({'user': data['username']}, SECRET_KEY, algorithm='HS256')
+        print(token)
+        return jsonify({'token': token})
     return jsonify({'message': 'Authentication failed'}), 401
 
 #  Create a protected route that requires a valid JWT token to access
 @app.route('/protected', methods=['GET'])
+@limiter_5.limit("5 per minute")    # limit the number of requests to 5 per minute
 def protected():
     token = request.headers.get('Authorization')
     try:
-        jwt.decode(token, SECRET_KEY, algorithms=['RS256'])
+        jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
         return jsonify({'message': 'Access granted'})
     except jwt.ExpiredSignatureError:
         return jsonify({'message': 'Token has expired'}), 401
