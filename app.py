@@ -141,6 +141,5 @@ def handle_error(error):
 
 if __name__ == '__main__':
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-    # running app with ssl certificate for https connection
-    app.run(host='0.0.0.0', port=5000, ssl_context=('cert.pem', 'key.pem'), debug=False)
+    app.run(host='0.0.0.0', port=5000, debug=False)
     # app.run(debug=True)
