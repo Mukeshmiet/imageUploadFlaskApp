@@ -1,3 +1,7 @@
+## NOTE*
+- When you visit first time on website it will take some time to load completely so please wait at least 3 minutes. On render.com free instance types will spin-down after 15 minutes of inactivity, then will spin back up when the next request is made, and that restart can take some time.
+https://render.com/docs/free#free-web-services
+
 # Image Upload and Capture App 
 (Visit: https://capture-upload-image-app.onrender.com/ )
 
@@ -14,6 +18,8 @@ Welcome to the Image Upload and Capture App repository! This project aims to cre
 - **Key based authentication system using JWT token**: Want to test authentication by http POST method on (https://capture-upload-image-app.onrender.com/login) with json body " {"username":"flaskApp", "password":"App@123"} ", that will give access token or authentication failed message in json, after that you can test generated token by http GET method on ( https://capture-upload-image-app.onrender.com/protected ) with header value "  'Authorization': '<your access token here>'  ", this will give you json message that 'Access granted' or 'Token has expired' or 'Invalid token' based on the access token.
 
 - **Set your access limit**: With Flask limiter you can easily apply rate limit i.e. if number of server hits exceeded your apply limit then user cannot access website untill the set time passes, you can easily set "3 per minute" or "60 per hour" or "200 per day". In this you can easily manage traffic on your server.
+  
+- **Note**: At root: there an python api script to test the throttle limit named "throttle_limit_test_script.py"
 
 - **Cross-Platform Compatibility**: This project is designed to work seamlessly across multiple platforms, including web, Android, and iOS. Users can access the app on their preferred device.
 
